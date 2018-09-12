@@ -30,6 +30,7 @@ for kmer in allk:
 
 patterns = list(set(patterns))
 
+
 output = []
 
 for motif in patterns:
