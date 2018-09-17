@@ -13,29 +13,33 @@ di = {
         "T": 3
     }
 
-def hammlen(string1, string2, m=0, fast=False):
+'''
+input:  two strings of equal length
+output: hamming distance between them
+'''
+def hammlen(string1, string2):
     h = 0
     for i in range(len(string1)):
         if string1[i] != string2[i]:
             h += 1
-            if fast and h > m:
-                break
 
     return h
 
 
-def combinations(string, d):
-    s = list(comb(string,d))
-    s = list(map(lambda a:"".join(list(a)),s))
-
-    return s
-
-
+'''
+input:  integer k
+output: list of all k-mer permutations
+'''
 def allkmers(k):
     kmers = list(it.product("ACGT", repeat=k))
     return [''.join(x) for x in kmers]
 
 
+
+'''
+input:  list of strings and integer k
+output: all k-mer patterns in the strings
+'''
 def kpatterns(arr, k):
     patterns = []
     
@@ -46,6 +50,14 @@ def kpatterns(arr, k):
     return list(set(patterns))
 
 
+'''
+input:  dna: list of strings
+        k  : k-mer length
+        d  : maximum hamming distance
+
+output: list of all kmers from dna, with hamming
+        distance of most d
+'''
 def aproxkmers(dna,k,d):
     patterns = kpatterns(dna,k)
 
@@ -64,13 +76,10 @@ def aproxkmers(dna,k,d):
 
 '''
 input: np.2darray of characters
-
 output: tuple of consensus string and its score
-
 ----------------
 to convert list of strings to np.2darray of characters:
     2darr = np.asarray([list(x) for x in dna])
-
 '''
 def conscore(arr):
     cons = ""
@@ -85,6 +94,10 @@ def conscore(arr):
     return (cons, score)
 
 
+'''
+input:  list of strings (motifs)
+output: score of given motifs
+'''
 def calcscore(arr):
     arr = np.asarray([list(x) for x in arr])
     score = arr.shape[0] * arr.shape[1]
@@ -97,6 +110,10 @@ def calcscore(arr):
     return score
 
 
+'''
+input:  kmer, profile matrix
+output: probability of the consensus string 
+'''
 def calcprob(kmer, matrix):
     prob = 1
 
@@ -106,6 +123,12 @@ def calcprob(kmer, matrix):
     return prob
 
 
+'''
+input:  dna: list of strings
+        k  : k-mer length
+        pr : profile matrix
+output: most probable consensus string from dna
+'''
 def profilemostprobstring(dna, k, pr):
     probs = []
 
@@ -116,8 +139,10 @@ def profilemostprobstring(dna, k, pr):
     return max(probs, key=lambda a:a[0])[1]
     
 
-
-
+'''
+input:  list of strings (motifs)
+output: profile matrix from the motifs
+'''
 def makeprofile(motifs):
     motifs = np.asarray([list(x) for x in motifs])
     j = motifs.shape[0]
@@ -141,16 +166,6 @@ def makeprofile(motifs):
     profiles = np.transpose(np.asarray(profiles))
 
     return profiles
-
-
-
-
-
-
-
-
-
-
 
 
 
