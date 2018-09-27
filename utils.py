@@ -124,7 +124,7 @@ def calcprob(kmer, matrix):
 
 
 '''
-input:  dna: list of strings
+input:  dna: strings
         k  : k-mer length
         pr : profile matrix
 output: most probable consensus string from dna
@@ -140,12 +140,30 @@ def profilemostprobstring(dna, k, pr):
     
 
 '''
+input:  dna: strings
+        k: kmer length
+        pr: profile matrix
+output: random kmer from dna, chosen
+        with the profile weights
+'''
+def randstringfromprofile(dna, k, pr):
+    kmers = []
+    probs = []
+
+    for i in range(len(dna)-k+1):
+        x = dna[i:i+k]
+        kmers.append(x)
+        probs.append(calcprob(x,pr))
+
+    return np.random.choice(kmers,1,probs)[0]
+
+
+'''
 input:  list of strings (motifs)
 output: profile matrix from the motifs
 '''
 def makeprofile(motifs):
     motifs = np.asarray([list(x) for x in motifs])
-    j = motifs.shape[0]
     motifs = np.transpose(motifs)
 
     counts = [Counter(x) for x in motifs]
@@ -154,6 +172,8 @@ def makeprofile(motifs):
         [c['A'],c['C'],c['G'],c['T']]
         for c in counts
     ]
+
+    j = sum(profiles[0])
 
     divide = lambda a: a/j
     vdivide = np.vectorize(divide)
@@ -168,5 +188,46 @@ def makeprofile(motifs):
     return profiles
 
 
+'''
+input:  profile matrix
+output: profile with added pseudocounts
+'''
+def addpseudocounts(profile):
+    inc = lambda a: a+1
+    vinc = np.vectorize(inc)
 
+    profile = [
+        vinc(x)
+        for x in profile
+    ]
+
+    return np.asarray(profile)
+
+
+def makeprofile_withpseudocount(motifs):
+    motifs = np.asarray([list(x) for x in motifs])
+    motifs = np.transpose(motifs)
+
+    counts = [Counter(x) for x in motifs]
+
+    profiles = [
+        [c['A'],c['C'],c['G'],c['T']]
+        for c in counts
+    ]
+
+    profiles = addpseudocounts(profiles)
+
+    j = sum(profiles[0])
+
+    divide = lambda a: a/j
+    vdivide = np.vectorize(divide)
+
+    profiles = [
+        vdivide(x)
+        for x in profiles
+    ]
+
+    profiles = np.transpose(np.asarray(profiles))
+
+    return profiles
 
