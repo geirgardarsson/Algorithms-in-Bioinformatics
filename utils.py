@@ -160,9 +160,11 @@ def randstringfromprofile(dna, k, pr):
 
 '''
 input:  list of strings (motifs)
+        psecount, boolean if pseudocounts should
+        be added. (optional, default false)
 output: profile matrix from the motifs
 '''
-def makeprofile(motifs):
+def makeprofile(motifs, psecount=False):
     motifs = np.asarray([list(x) for x in motifs])
     motifs = np.transpose(motifs)
 
@@ -172,6 +174,9 @@ def makeprofile(motifs):
         [c['A'],c['C'],c['G'],c['T']]
         for c in counts
     ]
+
+    if psecount:
+        profiles = addpseudocounts(profiles)
 
     j = sum(profiles[0])
 
@@ -196,38 +201,8 @@ def addpseudocounts(profile):
     inc = lambda a: a+1
     vinc = np.vectorize(inc)
 
-    profile = [
-        vinc(x)
-        for x in profile
-    ]
+    profile = [vinc(x) for x in profile]
 
     return np.asarray(profile)
 
-
-def makeprofile_withpseudocount(motifs):
-    motifs = np.asarray([list(x) for x in motifs])
-    motifs = np.transpose(motifs)
-
-    counts = [Counter(x) for x in motifs]
-
-    profiles = [
-        [c['A'],c['C'],c['G'],c['T']]
-        for c in counts
-    ]
-
-    profiles = addpseudocounts(profiles)
-
-    j = sum(profiles[0])
-
-    divide = lambda a: a/j
-    vdivide = np.vectorize(divide)
-
-    profiles = [
-        vdivide(x)
-        for x in profiles
-    ]
-
-    profiles = np.transpose(np.asarray(profiles))
-
-    return profiles
 
