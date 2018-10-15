@@ -29,8 +29,6 @@ down = np.asarray([pint(x) for x in down])
 right = [x.split(" ") for x in right]
 right = np.asarray([pint(x) for x in right])
 
-manhattan = np.zeros((n+1, m+1))
-
 
 # function defined here so 
 # the down and right arrays
@@ -50,4 +48,5 @@ def southoreast(i,j):
     return max(x,y)
 
 print(southoreast(n,m))
+print(manhattan)
 
