@@ -22,27 +22,14 @@ motifs = rkmers[:]
 
 i = 0
 
-while i < 1:
-    print()
-    for m in motifs:
-        print(m)
-    print()
+while i < 1001:
 
     p = u.makeprofile(motifs, True)
-
-    for s in p:
-        s = map("{0:.2f}".format, s)
-        print(*s)
-    print()
 
     motifs = [
         u.randstringfromprofile(s, k, p)
         for s in dna
     ]
-
-    for m in motifs:
-        print(m)
-    print()
 
     if u.calcscore(motifs) < u.calcscore(bestmotifs):
         bestmotifs = motifs[:]
